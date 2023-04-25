@@ -70,6 +70,11 @@
               font-family: Consolas, "Courier New", "Lucida Console", Monaco, "Source Code Pro", monospace;
             }
 
+            #copyableURL{
+                font-family: Consolas, "Courier New", "Lucida Console", Monaco, "Source Code Pro", monospace;
+                margin-top: 10px;
+            }
+
             table#outputTable td {
               text-align: left;
               padding: 8px;
@@ -139,8 +144,6 @@
                     row.insertCell().innerText = key;
                     row.insertCell().innerText = value;
                 };
-
-                document.getElementById("copyableURL").innerText = flatHost + "?" + obj["id"];
             }
 
             async function senpaiPost(){
@@ -156,6 +159,7 @@
                     }
                 });
                 const myJson = await response.json(); //extract JSON from the http response
+                document.getElementById("copyableURL").innerText = flatHost + "?" + obj["id"];
                 displayResult(myJson);
             }
             async function senpaiGet(){
@@ -261,9 +265,9 @@
     <button hidden id="inputReject" onclick="document.getElementById('outputTable').innerHTML = ''; document.getElementById('copyableURL').innerHTML = '';senpaiReject()">Reject</button>
     <!-- <button onclick="displayResult({'Amogus': 'Sus', 'sussy baka': 'e'})">Debug</button> -->
     <script>
-        const asd = window.location.search;
+        asd = window.location.search;
         console.log("a");
-        if(asd.length == 0){
+        if(asd.length != 0){
             console.log("b");
             asd = asd.substring(1);
             visModeGet();
