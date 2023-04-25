@@ -248,8 +248,8 @@
 
     <table id="outputTable"></table>
 
-    <button hidden id="inputAccept" onclick="senpaiAccept()">Accept</button>
-    <button hidden id="inputReject" onclick="senpaiReject()">Reject</button>
+    <button hidden id="inputAccept" onclick="document.getElementById('outputTable').innerHTML = ''; senpaiAccept()">Accept</button>
+    <button hidden id="inputReject" onclick="document.getElementById('outputTable').innerHTML = ''; senpaiReject()">Reject</button>
     <!-- <button onclick="displayResult({'Amogus': 'Sus', 'sussy baka': 'e'})">Debug</button> -->
     </body>
 </html> 
