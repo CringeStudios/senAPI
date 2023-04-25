@@ -125,6 +125,7 @@
         </style>
         <script>
             const host = 'https://senpai.cringe-studios.com/api/senpai'
+            const flatHost = 'https://senpai.cringe-studios.com'
 
             function displayResult(obj){
                 theTable = document.getElementById("outputTable");
@@ -138,6 +139,8 @@
                     row.insertCell().innerText = key;
                     row.insertCell().innerText = value;
                 };
+
+                document.getElementById("copyableURL").innerText = flatHost + "?" + obj["id"];
             }
 
             async function senpaiPost(){
@@ -195,6 +198,7 @@
 
                 document.getElementById('inputSend').removeAttribute("hidden");
                 document.getElementById('outputTable').innerHTML = "";
+                document.getElementById('copyableURL').innerHTML = "";
                 document.getElementById('inputGet').setAttribute("hidden", "");
                 document.getElementById('inputAccept').setAttribute("hidden", "");
                 document.getElementById('inputReject').setAttribute("hidden", "");
@@ -209,6 +213,7 @@
 
                 document.getElementById('inputSend').setAttribute("hidden", "");
                 document.getElementById('outputTable').innerHTML = "";
+                document.getElementById('copyableURL').innerHTML = "";
                 document.getElementById('inputGet').removeAttribute("hidden");
                 document.getElementById('inputAccept').setAttribute("hidden", "");
                 document.getElementById('inputReject').setAttribute("hidden", "");
@@ -223,6 +228,7 @@
 
                 document.getElementById('inputSend').setAttribute("hidden", "");
                 document.getElementById('outputTable').innerHTML = "";
+                document.getElementById('copyableURL').innerHTML = "";
                 document.getElementById('inputGet').removeAttribute("hidden");
                 document.getElementById('inputAccept').removeAttribute("hidden");
                 document.getElementById('inputReject').removeAttribute("hidden");
@@ -249,8 +255,21 @@
 
     <table id="outputTable"></table>
 
-    <button hidden id="inputAccept" onclick="document.getElementById('outputTable').innerHTML = ''; senpaiAccept()">Accept</button>
-    <button hidden id="inputReject" onclick="document.getElementById('outputTable').innerHTML = ''; senpaiReject()">Reject</button>
+    <div id="copyableURL"></div>
+
+    <button hidden id="inputAccept" onclick="document.getElementById('outputTable').innerHTML = ''; document.getElementById('copyableURL').innerHTML = ''; senpaiAccept()">Accept</button>
+    <button hidden id="inputReject" onclick="document.getElementById('outputTable').innerHTML = ''; document.getElementById('copyableURL').innerHTML = '';senpaiReject()">Reject</button>
     <!-- <button onclick="displayResult({'Amogus': 'Sus', 'sussy baka': 'e'})">Debug</button> -->
+    <script>
+        const asd = window.location.search;
+        console.log("a");
+        if(asd.length == 0){
+            console.log("b");
+            asd = asd.substring(1);
+            visModeGet();
+            document.getElementById("inputID").value = asd;
+            visModeAccept(); senpaiGet();
+        }
+    </script>
     </body>
 </html> 
