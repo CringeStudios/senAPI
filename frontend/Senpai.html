@@ -123,7 +123,7 @@
 
         </style>
         <script>
-            const host = 'localhost'
+            const host = 'https://cringe-studios.com/api/senpai'
 
             function displayResult(obj){
                 theTable = document.getElementById("outputTable");
@@ -139,51 +139,52 @@
                 };
             }
 
-            function senpaiPost(sender, recipient, message){
-                const userAction = async () => {
-                    const response = await fetch(host, {
-                        method: 'POST',
-                        body: {"sender": sender, "recipient": recipient, "message": message}, // string or object
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    const myJson = await response.json(); //extract JSON from the http response
-                    displayResult(myJson);
-                }
+            async function senpaiPost(){
+                sender = document.getElementById("inputName").value;
+                recipient = document.getElementById("inputSenpaiName").value;
+                message = document.getElementById("inputMessage").value;
+
+                const response = await fetch(host, {
+                    method: 'POST',
+                    body: {"sender": sender, "recipient": recipient, "message": message}, // string or object
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const myJson = await response.json(); //extract JSON from the http response
+                displayResult(myJson);
+                console.log(myJson);
             }
-            function senpaiGet(){
-                const userAction = async () => {
-                    const response = await fetch(host);
-                    const myJson = await response.json(); //extract JSON from the http response
-                    displayResult(myJson);
-                }
-            }
-            function senpaiAccept(){ //PUT
+            async function senpaiGet(){
                 id = document.getElementById("inputID").value;
-                const userAction = async () => {
-                    const response = await fetch(host, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    const myJson = await response.json(); //extract JSON from the http response
-                    displayResult(myJson);
-                }
+                localHostname = host + "/" + id;
+                const response = await fetch(localHostname);
+                const myJson = await response.json(); //extract JSON from the http response
+                displayResult(myJson);
             }
-            function senpaiReject(token, id){ //PUT
+            async function senpaiAccept(){ //PUT
                 id = document.getElementById("inputID").value;
-                const userAction = async () => {
-                    const response = await fetch(host, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
-                    const myJson = await response.json(); //extract JSON from the http response
-                    displayResult(myJson);
-                }
+                localHostname = host + "/" + id + "/accept";
+                const response = await fetch(localHostname, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const myJson = await response.json(); //extract JSON from the http response
+                displayResult(myJson);
+            }
+            async function senpaiReject(){ //PUT
+                id = document.getElementById("inputID").value;
+                localHostname = host + "/" + id + "/reject";
+                const response = await fetch(localHostname, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const myJson = await response.json(); //extract JSON from the http response
+                displayResult(myJson);
             }
             function visModeCompile(){
                 document.getElementById('inputName').removeAttribute("hidden");
