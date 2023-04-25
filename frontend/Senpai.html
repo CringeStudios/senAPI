@@ -254,7 +254,7 @@
     <input hidden id="inputMessage" type="text" name="Message" placeholder="Message to your senpai">
     
 
-    <button hidden id="inputSend" onclick="senpaiPost()">Send</button>
+    <button hidden id="inputSend" onclick="document.getElementById('outputTable').innerHTML = ''; senpaiPost()">Send</button>
     <button hidden id="inputGet" onclick="visModeAccept(); senpaiGet()" style="margin-bottom: 75px;">Query</button>
 
     <table id="outputTable"></table>
