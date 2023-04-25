@@ -159,7 +159,7 @@
                     }
                 });
                 const myJson = await response.json(); //extract JSON from the http response
-                document.getElementById("copyableURL").innerText = flatHost + "?" + obj["id"];
+                document.getElementById("copyableURL").innerText = flatHost + "?" + myJson["id"];
                 displayResult(myJson);
             }
             async function senpaiGet(){
@@ -266,9 +266,7 @@
     <!-- <button onclick="displayResult({'Amogus': 'Sus', 'sussy baka': 'e'})">Debug</button> -->
     <script>
         asd = window.location.search;
-        console.log("a");
         if(asd.length != 0){
-            console.log("b");
             asd = asd.substring(1);
             visModeGet();
             document.getElementById("inputID").value = asd;
