@@ -4,3 +4,4 @@
 /.classpath
 /config.json
 /db.json
+/dependency-reduced-pom.xml

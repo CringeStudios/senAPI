@@ -62,7 +62,7 @@ public class SenAPIRestController extends PartialRestController {
 
 		SenAPI.getDatabase().store(request);
 
-		ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toJSON()));
+		ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toRestJSON()));
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class SenAPIRestController extends PartialRestController {
 			return;
 		}
 
-		ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toJSON()));
+		ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toRestJSON()));
 	}
 
 	@Endpoint(method = HttpRequestMethod.PUT, path = "/{id}/accept", pathPattern = true)
@@ -95,7 +95,7 @@ public class SenAPIRestController extends PartialRestController {
 
 		request.setStatus(RequestStatus.ACCEPTED);
 		SenAPI.getDatabase().save();
-		ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toJSON()));
+		ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toRestJSON()));
 	}
 
 	@Endpoint(method = HttpRequestMethod.PUT, path = "/{id}/reject", pathPattern = true)
@@ -115,7 +115,7 @@ public class SenAPIRestController extends PartialRestController {
 
 		request.setStatus(RequestStatus.REJECTED);
 		SenAPI.getDatabase().save();
-		ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toJSON()));
+		ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toRestJSON()));
 	}
 
 }

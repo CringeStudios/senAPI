@@ -1,5 +1,7 @@
 package com.cringe_studios.senapi.database;
 
+import java.time.Instant;
+
 import me.mrletsplay.mrcore.json.JSONObject;
 import me.mrletsplay.mrcore.json.converter.JSONConstructor;
 import me.mrletsplay.mrcore.json.converter.JSONConvertible;
@@ -18,6 +20,8 @@ public class SenpaiRequest implements JSONConvertible {
 	@JSONValue
 	private RequestStatus status;
 
+	private Instant timestamp;
+
 	@JSONConstructor
 	private SenpaiRequest() {}
 
@@ -27,6 +31,7 @@ public class SenpaiRequest implements JSONConvertible {
 		this.recipient = recipient;
 		this.message = message;
 		this.status = RequestStatus.PENDING;
+		this.timestamp = Instant.now();
 	}
 
 	public String getId() {
@@ -56,6 +61,22 @@ public class SenpaiRequest implements JSONConvertible {
 	@Override
 	public JSONObject toJSON() {
 		return toJSON(SerializationOption.DONT_INCLUDE_CLASS, SerializationOption.SHORT_ENUMS);
+	}
+
+	public JSONObject toRestJSON() {
+		JSONObject obj = toJSON();
+		obj.put("timestamp", timestamp.toString());
+		return obj;
+	}
+
+	@Override
+	public void preSerialize(JSONObject object) {
+		object.put("timestamp", timestamp.toEpochMilli());
+	}
+
+	@Override
+	public void preDeserialize(JSONObject object) {
+		this.timestamp = Instant.ofEpochMilli(object.getLong("timestamp"));
 	}
 
 }
