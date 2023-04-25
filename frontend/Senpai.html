@@ -146,14 +146,13 @@
 
                 const response = await fetch(host, {
                     method: 'POST',
-                    body: {"sender": sender, "recipient": recipient, "message": message}, // string or object
+                    body: JSON.stringify({"sender": sender, "recipient": recipient, "message": message}), // string or object
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
                 const myJson = await response.json(); //extract JSON from the http response
                 displayResult(myJson);
-                console.log(myJson);
             }
             async function senpaiGet(){
                 id = document.getElementById("inputID").value;
