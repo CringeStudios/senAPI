@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="The official Senpai API Interface!">
+        <meta property="og:image" content="https://nsfw.cringe-studios.com/uwu.jpg">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://senpai.cringe-studios.com/">
+        <meta property="og:title" content="Senpai API Interface">
+        <meta property="og:description" content="The official Senpai API Interface!">
+        <link rel="icon" type="image/x-icon" href="https://nsfw.cringe-studios.com/uwu.jpg">
+        
+        <title>Senpai</title>
+        <style>
+            /*table#outputTable {
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            table#outputTable td {
+                text-align: left;
+                padding: 8px;
+            }
+
+            table#outputTable thead td {
+                background-color: #003366;
+                color: white;
+                font-size: 24px;
+                text-align: center;
+                padding: 16px;
+                border-radius: 8px;
+                margin-bottom: 32px;
+            }
+
+            table#outputTable tbody tr:nth-child(even){
+                background-color: #f2f2f2;
+            }
+
+            table#outputTable {
+                font-family: "Consolas", "Courier New", "Lucida Console", "Monaco", "Source Code Pro", monospace;
+            }*/
+
+            body{
+                font-family: Tahoma;
+            }
+
+            input{
+                margin: 10px;
+            }
+            /* Button styling */
+            button {
+              background-color: #1E90FF;
+              color: white;
+              font-size: 16px;
+              font-weight: bold;
+              text-align: center;
+              padding: 12px 24px;
+              border: none;
+              border-radius: 8px;
+              cursor: pointer;
+              margin-top: 16px;
+              margin-bottom: 16px;
+            }
+
+            button:hover {
+              background-color: #0066CC;
+            }
+
+            button:active {
+              background-color: #004C99;
+            }
+
+            /* Table styling */
+            table#outputTable {
+              border-collapse: collapse;
+              width: 100%;
+              font-family: Consolas, "Courier New", "Lucida Console", Monaco, "Source Code Pro", monospace;
+            }
+
+            #copyableURL{
+                font-family: Consolas, "Courier New", "Lucida Console", Monaco, "Source Code Pro", monospace;
+                margin-top: 10px;
+            }
+
+            table#outputTable td {
+              text-align: left;
+              padding: 8px;
+            }
+
+            table#outputTable thead td {
+              background-color: #b19cd9;
+              color: white;
+              font-size: 24px;
+              text-align: center;
+              padding: 16px;
+              border-radius: 8px;
+              margin-bottom: 32px;
+            }
+
+            table#outputTable tbody tr:nth-child(even){
+              background-color: #e7d9f5;
+            }
+
+            /* Button styling */
+            button {
+              background-color: #b19cd9;
+              color: white;
+              font-size: 16px;
+              font-weight: bold;
+              text-align: center;
+              padding: 12px 24px;
+              border: none;
+              border-radius: 8px;
+              cursor: pointer;
+              margin-top: 16px;
+              margin-bottom: 16px;
+            }
+
+            button:hover {
+              background-color: #a18bcd;
+            }
+
+            button:active {
+              background-color: #896d9e;
+            }
+
+            /* Input field styling */
+            input[type=text], textarea {
+              width: 100%;
+              padding: 12px;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              resize: vertical;
+              font-size: 16px;
+            }
+
+        </style>
+        <script>
+            const host = 'https://senpai.cringe-studios.com/api/senpai'
+            const flatHost = 'https://senpai.cringe-studios.com'
+
+            function displayResult(obj){
+                theTable = document.getElementById("outputTable");
+                theadOfTable = theTable.createTHead();
+                theadRowOfTable = theadOfTable.insertRow(0);
+                theadRowOfTable.insertCell().innerText = "Key";
+                theadRowOfTable.insertCell().innerText = "Value";
+                tbodyOfTable = theTable.createTBody();
+                for(const [key, value] of Object.entries(obj)){
+                    var row = tbodyOfTable.insertRow();
+                    row.insertCell().innerText = key;
+                    row.insertCell().innerText = value;
+                };
+            }
+
+            async function senpaiPost(){
+                sender = document.getElementById("inputName").value;
+                recipient = document.getElementById("inputSenpaiName").value;
+                message = document.getElementById("inputMessage").value;
+
+                const response = await fetch(host, {
+                    method: 'POST',
+                    body: JSON.stringify({"sender": sender, "recipient": recipient, "message": message}), // string or object
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const myJson = await response.json(); //extract JSON from the http response
+                document.getElementById("copyableURL").innerText = flatHost + "?" + myJson["id"];
+                displayResult(myJson);
+            }
+            async function senpaiGet(){
+                id = document.getElementById("inputID").value;
+                localHostname = host + "/" + id;
+                const response = await fetch(localHostname);
+                const myJson = await response.json(); //extract JSON from the http response
+                displayResult(myJson);
+            }
+            async function senpaiAccept(){ //PUT
+                id = document.getElementById("inputID").value;
+                localHostname = host + "/" + id + "/accept";
+                const response = await fetch(localHostname, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const myJson = await response.json(); //extract JSON from the http response
+                displayResult(myJson);
+            }
+            async function senpaiReject(){ //PUT
+                id = document.getElementById("inputID").value;
+                localHostname = host + "/" + id + "/reject";
+                const response = await fetch(localHostname, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const myJson = await response.json(); //extract JSON from the http response
+                displayResult(myJson);
+            }
+            function visModeCompile(){
+                document.getElementById('inputName').removeAttribute("hidden");
+                document.getElementById('inputSenpaiName').removeAttribute("hidden");
+                document.getElementById('inputMessage').removeAttribute("hidden");
+
+                document.getElementById('inputID').setAttribute("hidden", "");
+
+                document.getElementById('inputSend').removeAttribute("hidden");
+                document.getElementById('outputTable').innerHTML = "";
+                document.getElementById('copyableURL').innerHTML = "";
+                document.getElementById('inputGet').setAttribute("hidden", "");
+                document.getElementById('inputAccept').setAttribute("hidden", "");
+                document.getElementById('inputReject').setAttribute("hidden", "");
+            }
+
+            function visModeGet(){
+                document.getElementById('inputName').setAttribute("hidden", "");
+                document.getElementById('inputSenpaiName').setAttribute("hidden", "");
+                document.getElementById('inputMessage').setAttribute("hidden", "");
+
+                document.getElementById('inputID').removeAttribute("hidden");
+
+                document.getElementById('inputSend').setAttribute("hidden", "");
+                document.getElementById('outputTable').innerHTML = "";
+                document.getElementById('copyableURL').innerHTML = "";
+                document.getElementById('inputGet').removeAttribute("hidden");
+                document.getElementById('inputAccept').setAttribute("hidden", "");
+                document.getElementById('inputReject').setAttribute("hidden", "");
+            }
+
+            function visModeAccept(){
+                document.getElementById('inputName').setAttribute("hidden", "");
+                document.getElementById('inputSenpaiName').setAttribute("hidden", "");
+                document.getElementById('inputMessage').setAttribute("hidden", "");
+
+                document.getElementById('inputID').removeAttribute("hidden");
+
+                document.getElementById('inputSend').setAttribute("hidden", "");
+                document.getElementById('outputTable').innerHTML = "";
+                document.getElementById('copyableURL').innerHTML = "";
+                document.getElementById('inputGet').removeAttribute("hidden");
+                document.getElementById('inputAccept').removeAttribute("hidden");
+                document.getElementById('inputReject').removeAttribute("hidden");
+            }
+            
+
+        </script> 
+    </head>
+    <body style="margin:0 auto;width: 800px;">
+
+    <h1>The Senpai Webinterface</h1>
+    <p>By pressing on the first button, you can write a new Senpai request. By pressing on the second button, you can view the current state of a Senpai request and if you are the Senpai, you can either accept or decline the request.</p>
+    <button onclick="visModeCompile()">Compile a new Senpai request</button>
+    <button onclick="visModeGet()">Send for a Senpai request</button><br>
+    
+    <input hidden id="inputID" type="text" name="ID" placeholder="an ID">
+    <input hidden id="inputName" type="text" name="Name" placeholder="Your Name">
+    <input hidden id="inputSenpaiName" type="text" name="Senpai" placeholder="His Name">
+    <input hidden id="inputMessage" type="text" name="Message" placeholder="Message to your senpai">
+    
+
+    <button hidden id="inputSend" onclick="document.getElementById('outputTable').innerHTML = ''; senpaiPost()">Send</button>
+    <button hidden id="inputGet" onclick="visModeAccept(); senpaiGet()" style="margin-bottom: 75px;">Query</button>
+
+    <table id="outputTable"></table>
+
+    <div id="copyableURL"></div>
+
+    <button hidden id="inputAccept" onclick="document.getElementById('outputTable').innerHTML = ''; document.getElementById('copyableURL').innerHTML = ''; senpaiAccept()">Accept</button>
+    <button hidden id="inputReject" onclick="document.getElementById('outputTable').innerHTML = ''; document.getElementById('copyableURL').innerHTML = '';senpaiReject()">Reject</button>
+    <!-- <button onclick="displayResult({'Amogus': 'Sus', 'sussy baka': 'e'})">Debug</button> -->
+    <script>
+        asd = window.location.search;
+        if(asd.length != 0){
+            asd = asd.substring(1);
+            visModeGet();
+            document.getElementById("inputID").value = asd;
+            visModeAccept(); senpaiGet();
+        }
+    </script>
+    </body>
+</html> 
