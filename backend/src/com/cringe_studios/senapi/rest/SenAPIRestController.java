@@ -7,7 +7,6 @@ import com.cringe_studios.senapi.database.RequestStatus;
 import com.cringe_studios.senapi.database.SenpaiRequest;
 
 import me.mrletsplay.mrcore.json.JSONObject;
-import me.mrletsplay.mrcore.json.JSONParseException;
 import me.mrletsplay.mrcore.json.JSONType;
 import me.mrletsplay.simplehttpserver.http.HttpRequestMethod;
 import me.mrletsplay.simplehttpserver.http.HttpStatusCodes;
@@ -17,8 +16,15 @@ import me.mrletsplay.simplehttpserver.http.endpoint.rest.PartialRestController;
 import me.mrletsplay.simplehttpserver.http.header.DefaultClientContentTypes;
 import me.mrletsplay.simplehttpserver.http.request.HttpRequestContext;
 import me.mrletsplay.simplehttpserver.http.response.JsonResponse;
+import me.mrletsplay.simplehttpserver.http.validation.JsonObjectValidator;
+import me.mrletsplay.simplehttpserver.http.validation.result.ValidationResult;
 
 public class SenAPIRestController extends PartialRestController {
+
+	private static final JsonObjectValidator STORE_VALIDATOR = new JsonObjectValidator()
+		.require("sender", JSONType.STRING)
+		.require("recipient", JSONType.STRING)
+		.require("message", JSONType.STRING);
 
 	public SenAPIRestController(String basePath) {
 		super(basePath);
@@ -40,17 +46,14 @@ public class SenAPIRestController extends PartialRestController {
 		HttpRequestContext ctx = HttpRequestContext.getCurrentContext();
 
 		JSONObject data;
-		try {
-			data = ctx.getClientHeader().getPostData().getParsedAs(DefaultClientContentTypes.JSON_OBJECT);
-		}catch(JSONParseException | ClassCastException e) {
+		if((data = ctx.expectContent(DefaultClientContentTypes.JSON_OBJECT)) == null){
 			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("Bad JSON")));
 			return;
 		}
 
-		if(!data.isOfType("sender", JSONType.STRING)
-			|| !data.isOfType("recipient", JSONType.STRING)
-			|| !data.isOfType("message", JSONType.STRING)) {
-			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("sender, recipient and message must be set")));
+		ValidationResult r = STORE_VALIDATOR.validate(data);
+		if(!r.isOk()) {
+			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, r.asJsonResponse());
 			return;
 		}
 
