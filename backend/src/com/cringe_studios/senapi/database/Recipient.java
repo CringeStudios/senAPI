@@ -1,5 +1,7 @@
 package com.cringe_studios.senapi.database;
 
+import java.util.Objects;
+
 import me.mrletsplay.mrcore.json.converter.JSONConvertible;
 import me.mrletsplay.mrcore.json.converter.JSONValue;
 
@@ -31,4 +33,16 @@ public class Recipient implements JSONConvertible{
 	public void setStatus(RequestStatus status) {
 		this.status = status;
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, status);
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		return name.equals(((Recipient) other).name);
+	}
+	
+	
 }

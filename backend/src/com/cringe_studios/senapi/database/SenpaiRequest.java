@@ -6,6 +6,7 @@ import java.util.List;
 
 import me.mrletsplay.mrcore.json.JSONObject;
 import me.mrletsplay.mrcore.json.JSONType;
+import me.mrletsplay.mrcore.json.converter.JSONComplexListType;
 import me.mrletsplay.mrcore.json.converter.JSONConstructor;
 import me.mrletsplay.mrcore.json.converter.JSONConvertible;
 import me.mrletsplay.mrcore.json.converter.JSONListType;
@@ -21,7 +22,7 @@ public class SenpaiRequest implements JSONConvertible {
 		message;
 
 	@JSONValue
-	@JSONListType(JSONType.STRING)
+	@JSONComplexListType(Recipient.class)
 	private List<Recipient> recipients;
 	
 	private Instant timestamp;
