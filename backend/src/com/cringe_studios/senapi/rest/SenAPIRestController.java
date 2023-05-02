@@ -1,8 +1,10 @@
 package com.cringe_studios.senapi.rest;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.cringe_studios.senapi.SenAPI;
+import com.cringe_studios.senapi.database.Recipient;
 import com.cringe_studios.senapi.database.RequestStatus;
 import com.cringe_studios.senapi.database.SenpaiRequest;
 
@@ -23,8 +25,11 @@ public class SenAPIRestController extends PartialRestController {
 
 	private static final JsonObjectValidator STORE_VALIDATOR = new JsonObjectValidator()
 		.require("sender", JSONType.STRING)
-		.require("recipient", JSONType.STRING)
+		.require("recipients", JSONType.ARRAY)
 		.require("message", JSONType.STRING);
+	
+	private static final JsonObjectValidator ACCEPT_VALIDATOR = new JsonObjectValidator()
+		.require("acceptor", JSONType.STRING);
 
 	public SenAPIRestController(String basePath) {
 		super(basePath);
@@ -60,7 +65,10 @@ public class SenAPIRestController extends PartialRestController {
 		SenpaiRequest request = new SenpaiRequest(
 			UUID.randomUUID().toString(),
 			data.getString("sender"),
-			data.getString("recipient"),
+			List.of(data.getJSONArray("recipients").stream()
+					.map(obj -> new Recipient(String.valueOf(obj)))
+					.distinct()
+					.toArray(Recipient[]::new)),
 			data.getString("message"));
 
 		SenAPI.getDatabase().store(request);
@@ -90,13 +98,25 @@ public class SenAPIRestController extends PartialRestController {
 			ctx.respond(HttpStatusCodes.NOT_FOUND_404, new JsonResponse(error("No senpai request with that id")));
 			return;
 		}
-
-		if(request.getStatus() != RequestStatus.PENDING) {
-			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("Senpai request not pending")));
+		
+		JSONObject data;
+		if((data = ctx.expectContent(DefaultClientContentTypes.JSON_OBJECT)) == null){
+			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("Bad JSON")));
 			return;
 		}
 
-		request.setStatus(RequestStatus.ACCEPTED);
+		ValidationResult r = ACCEPT_VALIDATOR.validate(data);
+		if(!r.isOk()) {
+			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, r.asJsonResponse());
+			return;
+		}
+				
+		if(request.getStatus(data.getString("acceptor")) != RequestStatus.PENDING) {
+			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("Senpai request for the senpai with " + data.getString("acceptor") + " not pending")));
+			return;
+		}
+
+		request.setStatus(data.getString("acceptor"), RequestStatus.ACCEPTED);
 		SenAPI.getDatabase().save();
 		ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toRestJSON()));
 	}
@@ -110,13 +130,25 @@ public class SenAPIRestController extends PartialRestController {
 			ctx.respond(HttpStatusCodes.NOT_FOUND_404, new JsonResponse(error("No senpai request with that id")));
 			return;
 		}
-
-		if(request.getStatus() != RequestStatus.PENDING) {
-			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("Senpai request not pending")));
+		
+		JSONObject data;
+		if((data = ctx.expectContent(DefaultClientContentTypes.JSON_OBJECT)) == null){
+			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("Bad JSON")));
 			return;
 		}
 
-		request.setStatus(RequestStatus.REJECTED);
+		ValidationResult r = ACCEPT_VALIDATOR.validate(data);
+		if(!r.isOk()) {
+			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, r.asJsonResponse());
+			return;
+		}
+		
+		if(request.getStatus(data.getString("acceptor")) != RequestStatus.PENDING) {
+			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("Senpai request for the senpai with" + data.getString("acceptor") + "not pending")));
+			return;
+		}
+
+		request.setStatus(data.getString("acceptor"), RequestStatus.REJECTED);
 		SenAPI.getDatabase().save();
 		ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toRestJSON()));
 	}

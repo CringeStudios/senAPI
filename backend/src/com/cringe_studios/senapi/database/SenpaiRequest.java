@@ -1,10 +1,14 @@
 package com.cringe_studios.senapi.database;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import me.mrletsplay.mrcore.json.JSONObject;
+import me.mrletsplay.mrcore.json.JSONType;
 import me.mrletsplay.mrcore.json.converter.JSONConstructor;
 import me.mrletsplay.mrcore.json.converter.JSONConvertible;
+import me.mrletsplay.mrcore.json.converter.JSONListType;
 import me.mrletsplay.mrcore.json.converter.JSONValue;
 import me.mrletsplay.mrcore.json.converter.SerializationOption;
 
@@ -14,23 +18,22 @@ public class SenpaiRequest implements JSONConvertible {
 	private String
 		id,
 		sender,
-		recipient,
 		message;
 
 	@JSONValue
-	private RequestStatus status;
-
+	@JSONListType(JSONType.STRING)
+	private List<Recipient> recipients;
+	
 	private Instant timestamp;
 
 	@JSONConstructor
 	private SenpaiRequest() {}
 
-	public SenpaiRequest(String id, String sender, String recipient, String message) {
+	public SenpaiRequest(String id, String sender, List<Recipient> recipients, String message) {
 		this.id = id;
 		this.sender = sender;
-		this.recipient = recipient;
+		this.recipients = recipients;
 		this.message = message;
-		this.status = RequestStatus.PENDING;
 		this.timestamp = Instant.now();
 	}
 
@@ -42,20 +45,24 @@ public class SenpaiRequest implements JSONConvertible {
 		return sender;
 	}
 
-	public String getRecipient() {
-		return recipient;
+	public List<Recipient> getRecipients() {
+		return recipients;
 	}
 
 	public String getMessage() {
 		return message;
 	}
 
-	public void setStatus(RequestStatus status) {
-		this.status = status;
+	public void setStatus(String name, RequestStatus status) {
+		Recipient r = recipients.stream().filter(rec -> rec.getName().equals(name)).findFirst().orElseGet(null);
+		if(r == null) throw new RuntimeException("Recipient name does not exist");
+		r.setStatus(status);
 	}
 
-	public RequestStatus getStatus() {
-		return status;
+	public RequestStatus getStatus(String name) {
+		Recipient r = recipients.stream().filter(rec -> rec.getName().equals(name)).findFirst().orElseGet(null);
+		if(r == null) throw new RuntimeException("Recipient name does not exist");
+		return r.getStatus();
 	}
 
 	@Override
