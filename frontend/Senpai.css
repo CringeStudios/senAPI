@@ -1,0 +1,88 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+    font-family: Tahoma;
+    margin:0 auto;
+    width: 800px;
+    background-color: #e7d9f5;
+}
+
+/* Table styling */
+table#outputTable {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: Consolas, "Courier New", "Lucida Console", Monaco, "Source Code Pro", monospace;
+}
+
+#copyableURL{
+    font-family: Consolas, "Courier New", "Lucida Console", Monaco, "Source Code Pro", monospace;
+    margin-top: 10px;
+}
+
+table#outputTable td {
+    text-align: left;
+    padding: 8px;
+}
+
+table#outputTable thead td {
+    background-color: #896d9e;
+    color: white;
+    font-size: 24px;
+    /*text-align: center;*/
+    padding: 16px;
+    /*border-radius: 8px;*/
+    /*margin-bottom: 32px;*/
+}
+
+table#outputTable tbody tr:nth-child(even){
+    background-color: #b19cd9;
+}
+
+/* Button styling */
+button {
+    background-color: #b19cd9;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    width:100%
+}
+
+button:hover {
+    background-color: #a18bcd;
+}
+
+button:active {
+    background-color: #896d9e;
+}
+
+/* Input field styling */
+input[type=text], textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    font-size: 16px;
+}
+
+input{
+    margin: 10px auto;
+}
+
+table.inlineButtonTable{
+    width:100%;
+    margin:auto;
+}
+
+table.inlineButtonTable tbody tr td{
+    width:50%;
+}
