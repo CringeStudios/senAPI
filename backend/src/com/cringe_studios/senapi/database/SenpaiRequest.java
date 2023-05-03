@@ -55,7 +55,7 @@ public class SenpaiRequest implements JSONConvertible {
 	}
 
 	public void setStatus(String name, RequestStatus status) throws RecipientException {
-		Recipient r = recipients.stream().filter(rec -> rec.getName().equals(name)).findFirst().orElseGet(null);
+		Recipient r = recipients.stream().filter(rec -> rec.getName().equals(name)).findFirst().orElse(null);
 		if(r == null) throw new RecipientException("Recipient name does not exist");
 		r.setStatus(status);
 	}
