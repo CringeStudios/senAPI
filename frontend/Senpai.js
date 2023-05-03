@@ -18,8 +18,8 @@ function displayResult(obj){
 async function senpaiPost(){
     sender = document.getElementById("inputName").value;
     //recipient = document.getElementById("inputSenpaiName").value;
-    recipients = document.getElementById('senpaiList');
-    recipients = recipients.filter(reci => (senpaiList[i].value == null || senpaiList[i].value == ""));
+    recipients = Array.from(document.getElementById('senpaiList').childNodes);
+    recipients = recipients.filter(reci => (reci.value == null || reci.value == ""));
     if(recipients.length == 0){
         recipients.push("");
     }
