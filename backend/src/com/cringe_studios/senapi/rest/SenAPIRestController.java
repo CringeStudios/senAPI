@@ -7,6 +7,7 @@ import com.cringe_studios.senapi.SenAPI;
 import com.cringe_studios.senapi.database.Recipient;
 import com.cringe_studios.senapi.database.RequestStatus;
 import com.cringe_studios.senapi.database.SenpaiRequest;
+import com.cringe_studios.senapi.database.RecipientException;
 
 import me.mrletsplay.mrcore.json.JSONObject;
 import me.mrletsplay.mrcore.json.JSONType;
@@ -111,14 +112,19 @@ public class SenAPIRestController extends PartialRestController {
 			return;
 		}
 				
-		if(request.getStatus(data.getString("acceptor")) != RequestStatus.PENDING) {
-			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("Senpai request for the senpai with " + data.getString("acceptor") + " not pending")));
+		try {
+			if(request.getStatus(data.getString("acceptor")) != RequestStatus.PENDING) {
+				ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("Senpai request for the senpai with name " + data.getString("acceptor") + " not pending")));
+				return;
+			}
+			
+			request.setStatus(data.getString("acceptor"), RequestStatus.ACCEPTED);
+			SenAPI.getDatabase().save();
+			ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toRestJSON()));
+		} catch (RecipientException wr) {
+			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("Senpai with the name " + data.getString("acceptor") + " is not part of the senpai request!")));
 			return;
 		}
-
-		request.setStatus(data.getString("acceptor"), RequestStatus.ACCEPTED);
-		SenAPI.getDatabase().save();
-		ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toRestJSON()));
 	}
 
 	@Endpoint(method = HttpRequestMethod.PUT, path = "/{id}/reject", pathPattern = true)
@@ -143,14 +149,19 @@ public class SenAPIRestController extends PartialRestController {
 			return;
 		}
 		
-		if(request.getStatus(data.getString("acceptor")) != RequestStatus.PENDING) {
-			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("Senpai request for the senpai with" + data.getString("acceptor") + "not pending")));
+		try {
+			if(request.getStatus(data.getString("acceptor")) != RequestStatus.PENDING) {
+				ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("Senpai request for the senpai with" + data.getString("acceptor") + "not pending")));
+				return;
+			}
+
+			request.setStatus(data.getString("acceptor"), RequestStatus.REJECTED);
+			SenAPI.getDatabase().save();
+			ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toRestJSON()));
+		} catch (RecipientException wr) {
+			ctx.respond(HttpStatusCodes.BAD_REQUEST_400, new JsonResponse(error("Senpai with the name " + data.getString("acceptor") + " is not part of the senpai request!")));
 			return;
 		}
-
-		request.setStatus(data.getString("acceptor"), RequestStatus.REJECTED);
-		SenAPI.getDatabase().save();
-		ctx.respond(HttpStatusCodes.OK_200, new JsonResponse(request.toRestJSON()));
 	}
 
 }

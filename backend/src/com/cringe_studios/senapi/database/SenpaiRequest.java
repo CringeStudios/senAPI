@@ -54,15 +54,15 @@ public class SenpaiRequest implements JSONConvertible {
 		return message;
 	}
 
-	public void setStatus(String name, RequestStatus status) {
+	public void setStatus(String name, RequestStatus status) throws RecipientException {
 		Recipient r = recipients.stream().filter(rec -> rec.getName().equals(name)).findFirst().orElseGet(null);
-		if(r == null) throw new RuntimeException("Recipient name does not exist");
+		if(r == null) throw new RecipientException("Recipient name does not exist");
 		r.setStatus(status);
 	}
 
-	public RequestStatus getStatus(String name) {
-		Recipient r = recipients.stream().filter(rec -> rec.getName().equals(name)).findFirst().orElseGet(null);
-		if(r == null) throw new RuntimeException("Recipient name does not exist");
+	public RequestStatus getStatus(String name) throws RecipientException {
+		Recipient r = recipients.stream().filter(rec -> rec.getName().equals(name)).findFirst().orElse(null);
+		if(r == null) throw new RecipientException("Recipient name does not exist");
 		return r.getStatus();
 	}
 
